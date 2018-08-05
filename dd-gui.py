@@ -10,7 +10,7 @@ import time
 
 app=Tk()
 
-source = "/dev/sdd"
+source = "/dev/sda"
 dest = "backup.img"
 
 def choosesource():
@@ -20,17 +20,17 @@ def choosedest():
 
 
 def StartDD(self):
-    print source,dest
-    ddproc = subprocess.Popen(['sudo','dd', 'if='+source, 'of='+dest], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print 'Reading ' +source + ' to ' + dest
+    ddproc = subprocess.Popen(['sudo bash -c "dd if=' + source + '| gzip > ' + dest + '.zip"'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     while True:
       line = ddproc.stderr.readline()
-      if line != '':
-        print line.rstrip()
-      else:
-        break
+      if 'bytes' in line:
+          print line
+      if line == '':
+         break
 
 def startThread():
-    thread.start_new_thread(StartDD,("",))
+     thread.start_new_thread(StartDD,("",))
 
 
 label = Label(app,text="Read :").grid(row=0,column=0)
